@@ -10,6 +10,10 @@ app.get('/swag', (req, res) => {
   res.send('get swag');
 });
 
+app.get('/swag/:pserson', (req, res) => {
+  res.send(req.params.pserson);
+});
+
 app.post('/swag', (req, res) => {
   res.send(req.body);
 });
