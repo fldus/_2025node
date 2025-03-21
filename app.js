@@ -4,12 +4,14 @@ const express = require('express');
 // Express 애플리케이션을 생성합니다.
 const app = express();
 
+app.use(express.json());
+
 app.get('/swag', (req, res) => {
   res.send('get swag');
 });
 
 app.post('/swag', (req, res) => {
-  res.send('post swag');
+  res.send(req.body);
 });
 
 // 서버가 수신 대기할 포트 번호를 설정합니다.
