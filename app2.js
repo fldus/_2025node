@@ -34,7 +34,16 @@ app.get("/", (req, res) => {
 });
 
 app.get("/travel", (req, res) => {
-  res.render("travel", { travelList });
+  const query = "SELECT id, name FROM travellist";
+  db.query(query, (err, results) =>{
+    if(err){
+      console.error('데이터페이스 쿼리 실패');
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    const travelList = results;
+    res.render("travel", { travelList });
+  });
 });
 
 // 서버를 지정된 포트에서 실행합니다.
