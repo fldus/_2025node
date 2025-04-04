@@ -16,6 +16,9 @@ const db = mysql.createConnection({
 
 travelList = ["뉴욕", "파리", "서울", "도쿄"];
 
+app.use(express.json());
+app.use(express.urlencoded({extended : true}))
+
 app.set("view engine", "ejs");
 // __dirname : 현재 파일이 속한 절대경로
 // path.join을 사용하면 운영체제에 맞춰 경로 구분자(/, \) 자동으로 정해줌
@@ -34,8 +37,8 @@ app.get("/", (req, res) => {
 });
 
 app.get("/travel", (req, res) => {
-  const query = "SELECT id, name FROM travellist";
-  db.query(query, (err, results) =>{
+  const _query = "SELECT id, name FROM travellist";
+  db.query(_query, (err, results) =>{
     if(err){
       console.error('데이터페이스 쿼리 실패');
       res.status(500).send('Internal Server Error');
@@ -61,6 +64,20 @@ app.get('/travel/:id', (req, res) =>{
     }
     const travel = results[0];
     res.render('travelDetail', {travel});
+  });
+});
+
+app.post("/travel", (req, res) => {
+  // const name =  req.body.name;
+  const {name} = req.body;
+  const _query = "INSERT INTO travellist (name) VALUES (?)";
+  db.query(_query, [name], (err, results) =>{
+    if(err){
+      console.error('데이터페이스 쿼리 실패');
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    res.redirect("/travel");
   });
 });
 
