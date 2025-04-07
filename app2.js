@@ -103,6 +103,23 @@ app.put('/travel/:id', (req, res) =>{
   });
 });
 
+app.delete('/travel/:id', (req, res) =>{
+  const travelID = req.params.id;
+  const _query = 'DELETE FROM travellist WHERE id = ?';
+  db.query(_query, [travelID], (err, results) =>{
+    if(err){
+      console.error('DB 쿼리 실패', err);
+      res.status(500).send('내부 서버 에러');
+      return;
+    }
+    if(results.length === 0){
+      res.status(404).send('여행지를 찾을 수 없습니다.');
+      return;
+    }
+    res.render('deleteSuccess');
+  });
+});
+
 app.get('/travel/:id/edit', (req, res) =>{
   const travelID = req.params.id;
   const _query = 'SELECT * FROM travellist WHERE id = ?';

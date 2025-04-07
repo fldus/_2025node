@@ -9,8 +9,11 @@
     <ui>
         <% travelList.forEach(travel => { %>
             <li>
-                <a href="/travel/<%= travel.id%>"> <%= travel.name %> </a> 
-                <a href="/travel/<%= travel.id%>/edit"> 수정 </a> 
+                <a href="/travel/<%= travel.id %>"> <%= travel.name %> </a> 
+                <a href="/travel/<%= travel.id %>/edit"> 수정 </a> 
+                <form action="/travel/<%= travel.id %>?_method=DELETE" method="post" style="display: inline;">
+                    <button type="submit">삭제</button>
+                </form>
             </li>
         <% }) %>
     </ui>
