@@ -10,9 +10,11 @@
         <% travelList.forEach(travel => { %>
             <li>
                 <a href="/travel/<%= travel.id%>"> <%= travel.name %> </a> 
+                <a href="/travel/<%= travel.id%>/edit"> 수정 </a> 
             </li>
         <% }) %>
     </ui>
     <a href="/add-travel">여행지 추가</a>
+
 </body>
 </html>
