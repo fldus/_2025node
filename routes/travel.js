@@ -2,10 +2,7 @@ const express = require('express');
 const db = require('../db');
 const router = express.Router();
 
-router.get('/add', (req, res) =>{
-  res.render('addTravel');
-})
-
+// 목록 보기
 router.get('/', (req, res) => {
   const _query = 'SELECT id, name FROM travellist';
   db.query(_query, (err, results) =>{
@@ -19,6 +16,27 @@ router.get('/', (req, res) => {
   });
 });
 
+// 목록 추가하는 페이지
+router.get('/add', (req, res) =>{
+  res.render('addTravel');
+})
+
+// 추가
+router.post('/', (req, res) => {
+  // const name =  req.body.name;
+  const {name} = req.body;
+  const _query = 'INSERT INTO travellist (name) VALUES (?)';
+  db.query(_query, [name], (err, results) =>{
+    if(err){
+      console.error('데이터페이스 쿼리 실패');
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    res.redirect('/travel');
+  });
+});
+
+// 목록 내용(자세히 보기)
 router.get('/:id', (req, res) =>{
   const travelID = req.params.id;
   const _query = 'SELECT * FROM travellist WHERE id = ?';
@@ -37,20 +55,26 @@ router.get('/:id', (req, res) =>{
   });
 });
 
-router.post('/', (req, res) => {
-  // const name =  req.body.name;
-  const {name} = req.body;
-  const _query = 'INSERT INTO travellist (name) VALUES (?)';
-  db.query(_query, [name], (err, results) =>{
+// 수정하는 페이지
+router.get('/:id/edit', (req, res) =>{
+  const travelID = req.params.id;
+  const _query = 'SELECT * FROM travellist WHERE id = ?';
+  db.query(_query, [travelID], (err, results) =>{
     if(err){
-      console.error('데이터페이스 쿼리 실패');
-      res.status(500).send('Internal Server Error');
+      console.error('DB 쿼리 실패', err);
+      res.status(500).send('내부 서버 에러');
       return;
     }
-    res.redirect('/travel');
+    if(results.length === 0){
+      res.status(404).send('여행지를 찾을 수 없습니다.');
+      return;
+    }
+    const travel = results[0];
+    res.render('editTravel', {travel});
   });
 });
 
+// 수정
 router.put('/:id', (req, res) =>{
   const travelID = req.params.id;
   const {name} = req.body;
@@ -69,6 +93,7 @@ router.put('/:id', (req, res) =>{
   });
 });
 
+// 삭제
 router.delete('/:id', (req, res) =>{
   const travelID = req.params.id;
   const _query = 'DELETE FROM travellist WHERE id = ?';
@@ -83,24 +108,6 @@ router.delete('/:id', (req, res) =>{
       return;
     }
     res.render('deleteSuccess');
-  });
-});
-
-router.get('/:id/edit', (req, res) =>{
-  const travelID = req.params.id;
-  const _query = 'SELECT * FROM travellist WHERE id = ?';
-  db.query(_query, [travelID], (err, results) =>{
-    if(err){
-      console.error('DB 쿼리 실패', err);
-      res.status(500).send('내부 서버 에러');
-      return;
-    }
-    if(results.length === 0){
-      res.status(404).send('여행지를 찾을 수 없습니다.');
-      return;
-    }
-    const travel = results[0];
-    res.render('editTravel', {travel});
   });
 });
 
