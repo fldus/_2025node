@@ -22,13 +22,12 @@ router.get('/add', (req, res) =>{
 
 // 추가
 router.post('/', async (req, res) => {
+  // const name =  req.body.name;
+  const {name} = req.body;
   try{
-    // const name =  req.body.name;
-    const {name} = req.body;
     const _query = 'INSERT INTO travellist (name) VALUES (?)';
     await db.query(_query, [name]);
     res.redirect('/travel');
-
   }catch(err){
     console.error('데이터페이스 쿼리 실패');
     res.status(500).send('Internal Server Error');
@@ -37,8 +36,8 @@ router.post('/', async (req, res) => {
 
 // 목록 내용(자세히 보기)
 router.get('/:id', async (req, res) =>{
+  const travelID = req.params.id;
   try{
-    const travelID = req.params.id;
     const _query = 'SELECT * FROM travellist WHERE id = ?';
     const [results] = await db.query(_query, [travelID]);
 
@@ -57,8 +56,8 @@ router.get('/:id', async (req, res) =>{
 
 // 수정하는 페이지
 router.get('/:id/edit', async (req, res) =>{
+  const travelID = req.params.id;
   try{
-    const travelID = req.params.id;
     const _query = 'SELECT * FROM travellist WHERE id = ?';
     const [results] = await db.query(_query, [travelID]);
 
@@ -77,9 +76,9 @@ router.get('/:id/edit', async (req, res) =>{
 
 // 수정
 router.put('/:id', async (req, res) =>{
+  const travelID = req.params.id;
+  const {name} = req.body;
   try{
-    const travelID = req.params.id;
-    const {name} = req.body;
     const _query = 'UPDATE travellist SET name = ? WHERE id = ?';
     const [results] = await db.query(_query, [name, travelID]);
 
@@ -96,8 +95,8 @@ router.put('/:id', async (req, res) =>{
 
 // 삭제
 router.delete('/:id', async (req, res) =>{
+  const travelID = req.params.id;
   try{
-    const travelID = req.params.id;
     const _query = 'DELETE FROM travellist WHERE id = ?';
     const [results] = await db.query(_query, [travelID]);
 
